@@ -1,4 +1,4 @@
-const store = Immutable.Map({
+const initialStore = Immutable.Map({
   user: Immutable.Map({ name: 'Student' }),
   apod: '',
   rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
@@ -9,6 +9,15 @@ const root = document.getElementById('root')
 
 const updateStore = (store, newState) => {
   render(root, store.merge(newState))
+}
+
+const getCuriosityInformation = (state) => {
+  fetch(`http://localhost:3000/apod`)
+    .then((res) => {
+      console.log('GET /apod 200')
+      return res.json()
+    })
+    .then((apod) => updateStore(state, { apod }))
 }
 
 const render = async (root, state) => {
@@ -34,7 +43,7 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
-                ${ImageOfTheDay(apod)}
+                ${ImageOfTheDay(state, apod)}
             </section>
         </main>
         <footer></footer>
@@ -43,7 +52,7 @@ const App = (state) => {
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
-  render(root, store)
+  render(root, initialStore)
 })
 
 // ------------------------------------------------------  EXAMPLES
@@ -62,13 +71,13 @@ const Greeting = (name) => {
 }
 
 // Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod) => {
+const ImageOfTheDay = (state, apod) => {
   // If image does not already exist, or it is not from today -- request it again
   const today = new Date()
   const photodate = new Date(apod.date)
 
   if (!apod || apod.date === today.getDate()) {
-    getImageOfTheDay(store)
+    getImageOfTheDay(state)
   }
 
   // check if the photo of the day is actually type video!
@@ -95,5 +104,5 @@ const getImageOfTheDay = (state) => {
       console.log('GET /apod 200')
       return res.json()
     })
-    .then((apod) => updateStore(store, { apod }))
+    .then((apod) => updateStore(state, { apod }))
 }
