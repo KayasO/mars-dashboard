@@ -30,7 +30,20 @@ app.get('/manifests/curiosity', async (req, res) => {
     const data = await fetch(
       `https://api.nasa.gov/mars-photos/api/v1/manifests/curiosity?api_key=${process.env.API_KEY}`
     ).then((res) => res.json())
-    res.send({ data })
+
+    const response = {
+      launch_date: data.photo_manifest.launch_date,
+      landing_date: data.photo_manifest.landing_date,
+      status: data.photo_manifest.status,
+      recent_photos_amount:
+        data.photo_manifest.photos[data.photo_manifest.photos.length - 1]
+          .total_photos,
+      recent_photos_date:
+        data.photo_manifest.photos[data.photo_manifest.photos.length - 1]
+          .earth_date,
+    }
+
+    res.send(response)
   } catch (err) {
     console.log('error:', err)
   }
