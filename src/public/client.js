@@ -46,7 +46,7 @@ window.addEventListener('load', () => {
   render(root, store)
 })
 
-// ------------------------------------------------------  COMPONENTS
+// ------------------------------------------------------  EXAMPLES
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = (name) => {
