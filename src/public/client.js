@@ -1,6 +1,7 @@
 const initialStore = Immutable.Map({
   user: Immutable.Map({ name: 'Student' }),
   apod: '',
+  info: Immutable.Map({}),
   rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
 })
 
@@ -12,12 +13,32 @@ const updateStore = (store, newState) => {
 }
 
 const getCuriosityInformation = (state) => {
-  fetch(`http://localhost:3000/apod`)
-    .then((res) => {
-      console.log('GET /apod 200')
-      return res.json()
+  fetch(`http://localhost:3000/manifests/curiosity`)
+    .then((res) => res.json())
+    .then((info) => {
+      updateStore(state, { info: Immutable.Map(info) })
     })
-    .then((apod) => updateStore(state, { apod }))
+}
+
+const CuriosityInformation = (state) => {
+  const info = state.get('info')
+
+  if (info.isEmpty()) {
+    getCuriosityInformation(state)
+    return ''
+  } else {
+    return `
+      <ul>
+        <li><b>Status:</b> ${info.get('status')}</li>
+        <li><b>Launch date:</b> ${info.get('launch_date')}</li>
+        <li><b>Landing date:</b> ${info.get('landing_date')}</li>
+        <li><b>Last taken photos from:</b> ${info.get(
+          'recent_photos_date'
+        )}</li>
+        <li><b>Amount:</b> ${info.get('recent_photos_amount')}</li>
+      </ul>
+    `
+  }
 }
 
 const render = async (root, state) => {
@@ -26,24 +47,15 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-  let { user, rovers, apod } = state.toJS()
+  const { rovers } = state.toJS()
+  console.log('state: ', state)
 
   return `
         <header></header>
         <main>
-            ${user.name}
             <section>
-                <h3>Put things on the page!</h3>
-                <p>Here is an example section.</p>
-                <p>
-                    One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
-                    the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
-                    This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
-                    applications. In addition, if the concept_tags parameter is set to True, then keywords derived from the image
-                    explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
-                    but generally help with discoverability of relevant imagery.
-                </p>
-                ${ImageOfTheDay(state, apod)}
+                <h1>${rovers[0]}!</h3>
+                ${CuriosityInformation(state)}
             </section>
         </main>
         <footer></footer>
@@ -100,9 +112,6 @@ const ImageOfTheDay = (state, apod) => {
 // Example API call
 const getImageOfTheDay = (state) => {
   fetch(`http://localhost:3000/apod`)
-    .then((res) => {
-      console.log('GET /apod 200')
-      return res.json()
-    })
+    .then((res) => res.json())
     .then((apod) => updateStore(state, { apod }))
 }
