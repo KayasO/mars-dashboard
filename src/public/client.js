@@ -2,6 +2,7 @@ const initialStore = Immutable.Map({
   user: Immutable.Map({ name: 'Student' }),
   apod: '',
   info: Immutable.Map({}),
+  photos: Immutable.List([]),
   rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
 })
 
@@ -41,6 +42,27 @@ const CuriosityInformation = (state) => {
   }
 }
 
+const getCuriosityPhotos = (state) => {
+  fetch(`http://localhost:3000/photos/curiosity?date=2021-12-12`)
+    .then((res) => res.json())
+    .then(({ photos }) => {
+      updateStore(state, { photos: Immutable.List(photos) })
+    })
+}
+
+const CuriosityPhotos = (state) => {
+  const photos = state.get('photos')
+  if (photos.isEmpty()) {
+    getCuriosityPhotos(state)
+    return ''
+  } else {
+    return `
+      <img src="${photos.get(0).img_src}" height="350px" width="100%" />
+      <p>${photos.get(0).id}</p>
+    `
+  }
+}
+
 const render = async (root, state) => {
   root.innerHTML = App(state)
 }
@@ -56,6 +78,7 @@ const App = (state) => {
             <section>
                 <h1>${rovers[0]}!</h3>
                 ${CuriosityInformation(state)}
+                ${CuriosityPhotos(state)}
             </section>
         </main>
         <footer></footer>
