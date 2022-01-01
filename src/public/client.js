@@ -42,7 +42,7 @@ const RoverInformation = (state) => {
 
   if (rover !== '' && !info.isEmpty()) {
     return `
-    <ul>
+    <ul class="information">
       <li><b>Status:</b> ${info.get('status')}</li>
       <li><b>Launch date:</b> ${info.get('launch_date')}</li>
       <li><b>Landing date:</b> ${info.get('landing_date')}</li>
@@ -73,7 +73,7 @@ const CuriosityPhotos = (state) => {
 
   if (!photos.isEmpty()) {
     return `
-      <img src="${photos.get(0).img_src}" height="350px" width="100%" />
+      <img src="${photos.get(0).img_src}" />
     `
   }
 
@@ -100,7 +100,7 @@ const App = (state) => {
         </header>
         <main>
             <section class="content">
-                <h1>${selectedRover}</h3>
+                <h1 class="title">${selectedRover}</h3>
                 ${RoverInformation(state)}
                 ${CuriosityPhotos(state)}
             </section>

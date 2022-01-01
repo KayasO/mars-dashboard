@@ -20,6 +20,18 @@ footer {
   /* footer styles */
 }
 
+.title {
+  font-size: 32px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.information {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 20px;
+}
+
 .menu {
   display: flex;
   justify-content: space-around;
