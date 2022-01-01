@@ -20,6 +20,32 @@ footer {
   /* footer styles */
 }
 
+.menu {
+  display: flex;
+  justify-content: space-around;
+}
+
+button {
+  background-color: #2196f3;
+  border: none;
+  border-radius: 2px;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 32px;
+  margin: 4px 2px;
+
+  width: 200px;
+  height: 150px;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: #64b5f6;
+}
+
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
   /* use mobile */
