@@ -21,20 +21,18 @@ footer {
 }
 
 .title {
-  font-size: 42px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
-.information {
-  display: flex;
-  justify-content: space-around;
-  padding-bottom: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  padding-bottom: 15px;
 }
 
 .menu {
   display: flex;
   justify-content: space-around;
+}
+
+.information {
+  padding-bottom: 20px;
 }
 
 button {
@@ -43,14 +41,7 @@ button {
   border-radius: 2px;
   color: white;
   padding: 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 32px;
   margin: 4px 2px;
-
-  width: 200px;
-  height: 150px;
 }
 
 button:hover {
@@ -67,6 +58,25 @@ button:hover {
 
 @media (min-width: 1224px) {
   /* use mobile */
+  .title {
+    font-size: 42px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .information {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  button {
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 32px;
+    width: 200px;
+    height: 150px;
+  }
 }
 
 /* -------------------  LARGE SCREENS  -------------- */
