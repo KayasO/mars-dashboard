@@ -8,6 +8,15 @@ const initialStore = Immutable.Map({
 // add our markup to the page
 const root = document.getElementById('root')
 
+const setBackground = () => {
+  fetch(`http://localhost:3000/apod`)
+    .then((res) => res.json())
+    .then((apod) => {
+      console.log('succ')
+      document.body.style.backgroundImage = "url('" + apod.url + "')"
+    })
+}
+
 const updateStore = (store, newState) => {
   render(root, store.merge(newState))
 }
@@ -46,8 +55,8 @@ const RoverInformation = (state) => {
   return ''
 }
 
-const getCuriosityPhotos = (state) => {
-  fetch(`http://localhost:3000/photos/curiosity?date=2021-12-12`)
+const getRoverPhotos = (state, rover) => {
+  fetch(`http://localhost:3000/photos/?rover=${rover}`)
     .then((res) => res.json())
     .then(({ photos }) => {
       updateStore(state, { photos: Immutable.List(photos) })
@@ -56,16 +65,19 @@ const getCuriosityPhotos = (state) => {
 
 const CuriosityPhotos = (state) => {
   const photos = state.get('photos')
+  const rover = state.get('selectedRover')
 
-  if (photos.isEmpty()) {
-    getCuriosityPhotos(state)
-    return ''
-  } else {
+  if (photos.isEmpty() && rover != '') {
+    getRoverPhotos(state, 'opportunity')
+  }
+
+  if (!photos.isEmpty()) {
     return `
       <img src="${photos.get(0).img_src}" height="350px" width="100%" />
-      <p>${photos.get(0).id}</p>
     `
   }
+
+  return ''
 }
 
 const render = async (root, state) => {
@@ -79,14 +91,15 @@ const App = (state) => {
   console.log('state: ', state)
 
   return `
-        <header></header>
+        <header>
+          <div class="menu">
+            <button id="${rovers[0]}">${rovers[0]}</button>
+            <button id="${rovers[1]}">${rovers[1]}</button>
+            <button id="${rovers[2]}">${rovers[2]}</button>
+          </div>
+        </header>
         <main>
-            <div class="menu">
-              <button id="${rovers[0]}">${rovers[0]}</button>
-              <button id="${rovers[1]}">${rovers[1]}</button>
-              <button id="${rovers[2]}">${rovers[2]}</button>
-            </div>
-            <section>
+            <section class="content">
                 <h1>${selectedRover}</h3>
                 ${RoverInformation(state)}
                 ${CuriosityPhotos(state)}

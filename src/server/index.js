@@ -52,12 +52,13 @@ app.get('/manifests', async (req, res) => {
   }
 })
 
-app.get('/photos/curiosity', async (req, res) => {
+app.get('/photos', async (req, res) => {
   try {
-    const { date } = req.query
+    const { rover } = req.query
+    const sol = Math.floor(Math.random() * 100)
 
     const photos = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=${date}&api_key=${process.env.API_KEY}`
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&api_key=${process.env.API_KEY}`
     ).then((res) => res.json())
     res.send(photos)
   } catch (err) {
