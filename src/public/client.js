@@ -63,12 +63,15 @@ const getRoverPhotos = (state, rover) => {
     })
 }
 
-const CuriosityPhotos = (state) => {
+const RoverPhotos = (state) => {
   const photos = state.get('photos')
   const rover = state.get('selectedRover')
 
-  if (photos.isEmpty() && rover != '') {
-    getRoverPhotos(state, 'opportunity')
+  if (
+    (rover !== '' && photos.isEmpty()) ||
+    (rover !== '' && rover !== photos.get(0).rover.name)
+  ) {
+    getRoverPhotos(state, rover)
   }
 
   if (!photos.isEmpty()) {
@@ -88,7 +91,6 @@ const render = async (root, state) => {
 // create content
 const App = (state) => {
   const { rovers, selectedRover } = state.toJS()
-  console.log('state: ', state)
 
   return `
         <header>
@@ -102,7 +104,7 @@ const App = (state) => {
             <section class="content">
                 <h1 class="title">${selectedRover}</h3>
                 ${RoverInformation(state)}
-                ${CuriosityPhotos(state)}
+                ${RoverPhotos(state)}
             </section>
         </main>
         <footer></footer>
