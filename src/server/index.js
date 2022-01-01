@@ -58,7 +58,7 @@ app.get('/photos', async (req, res) => {
     const sol = Math.floor(Math.random() * 100)
 
     const photos = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&api_key=${process.env.API_KEY}`
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?page=1&sol=${sol}&api_key=${process.env.API_KEY}`
     ).then((res) => res.json())
     res.send(photos)
   } catch (err) {

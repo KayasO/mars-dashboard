@@ -76,11 +76,21 @@ const RoverPhotos = (state) => {
 
   if (!photos.isEmpty()) {
     return `
-      <img src="${photos.get(0).img_src}" />
+      <div class="photos">
+        ${photosToImgTags(photos.toArray())}
+      </div>
     `
   }
 
   return ''
+}
+
+const photosToImgTags = (photos) => {
+  return photos.reduce(
+    (prev, current) =>
+      (prev += `<img key="${current.id}" src="${current.img_src}" />`),
+    ''
+  )
 }
 
 const render = async (root, state) => {
