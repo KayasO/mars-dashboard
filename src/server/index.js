@@ -32,6 +32,7 @@ app.get('/manifests/curiosity', async (req, res) => {
     ).then((res) => res.json())
 
     const response = {
+      name: 'Curiosity',
       launch_date: data.photo_manifest.launch_date,
       landing_date: data.photo_manifest.landing_date,
       status: data.photo_manifest.status,

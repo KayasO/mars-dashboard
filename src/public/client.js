@@ -1,9 +1,8 @@
 const initialStore = Immutable.Map({
-  user: Immutable.Map({ name: 'Student' }),
-  apod: '',
   info: Immutable.Map({}),
   photos: Immutable.List([]),
   rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
+  selectedRover: '',
 })
 
 // add our markup to the page
@@ -13,33 +12,38 @@ const updateStore = (store, newState) => {
   render(root, store.merge(newState))
 }
 
-const getCuriosityInformation = (state) => {
-  fetch(`http://localhost:3000/manifests/curiosity`)
+const getRoverInformation = (state, rover) => {
+  fetch(`http://localhost:3000/manifests/${rover}`)
     .then((res) => res.json())
     .then((info) => {
       updateStore(state, { info: Immutable.Map(info) })
     })
 }
 
-const CuriosityInformation = (state) => {
+const RoverInformation = (state) => {
   const info = state.get('info')
+  const rover = state.get('selectedRover')
 
-  if (info.isEmpty()) {
-    getCuriosityInformation(state)
-    return ''
-  } else {
-    return `
-      <ul>
-        <li><b>Status:</b> ${info.get('status')}</li>
-        <li><b>Launch date:</b> ${info.get('launch_date')}</li>
-        <li><b>Landing date:</b> ${info.get('landing_date')}</li>
-        <li><b>Last taken photos from:</b> ${info.get(
-          'recent_photos_date'
-        )}</li>
-        <li><b>Amount:</b> ${info.get('recent_photos_amount')}</li>
-      </ul>
-    `
+  if (
+    (rover !== '' && info.isEmpty()) ||
+    (rover !== '' && rover !== info.get('name'))
+  ) {
+    getRoverInformation(state, rover)
   }
+
+  if (rover !== '' && !info.isEmpty()) {
+    return `
+    <ul>
+      <li><b>Status:</b> ${info.get('status')}</li>
+      <li><b>Launch date:</b> ${info.get('launch_date')}</li>
+      <li><b>Landing date:</b> ${info.get('landing_date')}</li>
+      <li><b>Last taken photos from:</b> ${info.get('recent_photos_date')}</li>
+      <li><b>Amount:</b> ${info.get('recent_photos_amount')}</li>
+    </ul>
+  `
+  }
+
+  return ''
 }
 
 const getCuriosityPhotos = (state) => {
@@ -65,6 +69,7 @@ const CuriosityPhotos = (state) => {
 
 const render = async (root, state) => {
   root.innerHTML = App(state)
+  addButtonEventListeners(state)
 }
 
 // create content
@@ -75,14 +80,29 @@ const App = (state) => {
   return `
         <header></header>
         <main>
+            <div class="menu">
+              <button id="${rovers[0]}">${rovers[0]}</button>
+              <button id="${rovers[1]}">${rovers[1]}</button>
+              <button id="${rovers[2]}">${rovers[2]}</button>
+            </div>
             <section>
                 <h1>${rovers[0]}!</h3>
-                ${CuriosityInformation(state)}
+                ${RoverInformation(state)}
                 ${CuriosityPhotos(state)}
             </section>
         </main>
         <footer></footer>
     `
+}
+
+const addButtonEventListeners = (state) => {
+  const { rovers } = state.toJS()
+
+  rovers.forEach((rover) => {
+    document.getElementById(rover).addEventListener('click', () => {
+      updateStore(state, { selectedRover: rover })
+    })
+  })
 }
 
 // listening for load event because page should load before any JS is called
