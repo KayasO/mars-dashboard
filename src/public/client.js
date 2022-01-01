@@ -8,15 +8,6 @@ const initialStore = Immutable.Map({
 // add our markup to the page
 const root = document.getElementById('root')
 
-const setBackground = () => {
-  fetch(`http://localhost:3000/apod`)
-    .then((res) => res.json())
-    .then((apod) => {
-      console.log('succ')
-      document.body.style.backgroundImage = "url('" + apod.url + "')"
-    })
-}
-
 const updateStore = (store, newState) => {
   render(root, store.merge(newState))
 }
@@ -106,12 +97,16 @@ const render = async (root, state) => {
 const App = (state) => {
   const { rovers, selectedRover } = state.toJS()
 
+  const buttons = rovers
+    .map((r) => {
+      return `<button id="${r}">${r}</button>`
+    })
+    .join('')
+
   return `
         <header>
           <div class="menu">
-            <button id="${rovers[0]}">${rovers[0]}</button>
-            <button id="${rovers[1]}">${rovers[1]}</button>
-            <button id="${rovers[2]}">${rovers[2]}</button>
+            ${buttons}
           </div>
         </header>
         <main>
