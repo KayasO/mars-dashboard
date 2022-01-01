@@ -35,6 +35,14 @@ footer {
   padding-bottom: 20px;
 }
 
+img {
+  height: 150px;
+  width: 150px;
+
+  margin: 2px;
+  border: 2px solid black;
+}
+
 button {
   background-color: #2196f3;
   border: none;
@@ -74,8 +82,16 @@ button:hover {
     text-decoration: none;
     display: inline-block;
     font-size: 32px;
-    width: 200px;
+    width: 300px;
     height: 150px;
+  }
+
+  img {
+    height: 300px;
+    width: 300px;
+
+    margin: 5px;
+    border: 2px solid black;
   }
 }
 

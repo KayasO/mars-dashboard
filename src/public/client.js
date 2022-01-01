@@ -46,8 +46,12 @@ const RoverInformation = (state) => {
       <li><b>Status:</b> ${info.get('status')}</li>
       <li><b>Launch date:</b> ${info.get('launch_date')}</li>
       <li><b>Landing date:</b> ${info.get('landing_date')}</li>
-      <li><b>Last taken photos from:</b> ${info.get('recent_photos_date')}</li>
-      <li><b>Amount:</b> ${info.get('recent_photos_amount')}</li>
+      <li><b>Most recently available photos:</b> ${info.get(
+        'recent_photos_amount'
+      )}</li>
+      <li><b>Date the most recent photos were taken:</b> ${info.get(
+        'recent_photos_date'
+      )}</li>
     </ul>
   `
   }
