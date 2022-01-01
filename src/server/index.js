@@ -25,14 +25,16 @@ app.get('/apod', async (req, res) => {
 })
 
 // your API calls
-app.get('/manifests/curiosity', async (req, res) => {
+app.get('/manifests', async (req, res) => {
   try {
+    const { rover } = req.query
+
     const data = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/manifests/curiosity?api_key=${process.env.API_KEY}`
+      `https://api.nasa.gov/mars-photos/api/v1/manifests/${rover}?api_key=${process.env.API_KEY}`
     ).then((res) => res.json())
 
     const response = {
-      name: 'Curiosity',
+      name: rover,
       launch_date: data.photo_manifest.launch_date,
       landing_date: data.photo_manifest.landing_date,
       status: data.photo_manifest.status,

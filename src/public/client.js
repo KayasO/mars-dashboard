@@ -13,7 +13,7 @@ const updateStore = (store, newState) => {
 }
 
 const getRoverInformation = (state, rover) => {
-  fetch(`http://localhost:3000/manifests/${rover}`)
+  fetch(`http://localhost:3000/manifests?rover=${rover}`)
     .then((res) => res.json())
     .then((info) => {
       updateStore(state, { info: Immutable.Map(info) })
@@ -56,6 +56,7 @@ const getCuriosityPhotos = (state) => {
 
 const CuriosityPhotos = (state) => {
   const photos = state.get('photos')
+
   if (photos.isEmpty()) {
     getCuriosityPhotos(state)
     return ''
@@ -74,7 +75,7 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-  const { rovers } = state.toJS()
+  const { rovers, selectedRover } = state.toJS()
   console.log('state: ', state)
 
   return `
@@ -86,7 +87,7 @@ const App = (state) => {
               <button id="${rovers[2]}">${rovers[2]}</button>
             </div>
             <section>
-                <h1>${rovers[0]}!</h3>
+                <h1>${selectedRover}</h3>
                 ${RoverInformation(state)}
                 ${CuriosityPhotos(state)}
             </section>
