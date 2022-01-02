@@ -12,15 +12,7 @@ const updateStore = (store, newState) => {
   render(root, store.merge(newState))
 }
 
-const getRoverInformation = (state, rover) => {
-  fetch(`http://localhost:3000/manifests?rover=${rover}`)
-    .then((res) => res.json())
-    .then((info) => {
-      updateStore(state, { info: Immutable.Map(info) })
-    })
-}
-
-const RoverInformation = (state) => {
+const RoverInformation = (state, getInformation) => {
   const info = state.get('info')
   const rover = state.get('selectedRover')
 
@@ -28,7 +20,7 @@ const RoverInformation = (state) => {
     (rover !== '' && info.isEmpty()) ||
     (rover !== '' && rover !== info.get('name'))
   ) {
-    getRoverInformation(state, rover)
+    getInformation(state, rover)
   }
 
   if (rover !== '' && !info.isEmpty()) {
@@ -50,15 +42,15 @@ const RoverInformation = (state) => {
   return ''
 }
 
-const getRoverPhotos = (state, rover) => {
-  fetch(`http://localhost:3000/photos/?rover=${rover}`)
-    .then((res) => res.json())
-    .then(({ photos }) => {
-      updateStore(state, { photos: Immutable.List(photos) })
-    })
+const photosToImgTags = (photos) => {
+  return photos.reduce(
+    (prev, current) =>
+      (prev += `<img key="${current.id}" src="${current.img_src}" />`),
+    ''
+  )
 }
 
-const RoverPhotos = (state) => {
+const RoverPhotos = (state, getPhotos) => {
   const photos = state.get('photos')
   const rover = state.get('selectedRover')
 
@@ -66,7 +58,7 @@ const RoverPhotos = (state) => {
     (rover !== '' && photos.isEmpty()) ||
     (rover !== '' && rover !== photos.get(0).rover.name)
   ) {
-    getRoverPhotos(state, rover)
+    getPhotos(state, rover)
   }
 
   if (!photos.isEmpty()) {
@@ -80,14 +72,6 @@ const RoverPhotos = (state) => {
   return ''
 }
 
-const photosToImgTags = (photos) => {
-  return photos.reduce(
-    (prev, current) =>
-      (prev += `<img key="${current.id}" src="${current.img_src}" />`),
-    ''
-  )
-}
-
 const render = async (root, state) => {
   root.innerHTML = App(state)
   addButtonEventListeners(state)
@@ -96,6 +80,22 @@ const render = async (root, state) => {
 // create content
 const App = (state) => {
   const { rovers, selectedRover } = state.toJS()
+
+  const getRoverPhotos = (state, rover) => {
+    fetch(`http://localhost:3000/photos/?rover=${rover}`)
+      .then((res) => res.json())
+      .then(({ photos }) => {
+        updateStore(state, { photos: Immutable.List(photos) })
+      })
+  }
+
+  const getRoverInformation = (state, rover) => {
+    fetch(`http://localhost:3000/manifests?rover=${rover}`)
+      .then((res) => res.json())
+      .then((info) => {
+        updateStore(state, { info: Immutable.Map(info) })
+      })
+  }
 
   const buttons = rovers
     .map((r) => {
@@ -112,8 +112,8 @@ const App = (state) => {
         <main>
             <section class="content">
                 <h1 class="title">${selectedRover}</h3>
-                ${RoverInformation(state)}
-                ${RoverPhotos(state)}
+                ${RoverInformation(state, getRoverInformation)}
+                ${RoverPhotos(state, getRoverPhotos)}
             </section>
         </main>
         <footer></footer>
